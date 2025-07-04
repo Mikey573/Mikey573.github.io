@@ -1,24 +1,26 @@
 from flask import Flask, request, jsonify
 import requests
+import os
 
 app = Flask(__name__)
 
-@app.route("/")
-def home():
-    return "✅ Flask app is running on Render!"
-
-@app.route("/callback")
+@app.route('/auth/lazada/callback')
 def callback():
-    code = request.args.get("code")
+    code = request.args.get('code')
     if not code:
-        return "❌ No code received", 400
+        return 'Missing code', 400
 
-    # 🔧 Replace with your real credentials
-    data = {
-        "app_key": "YOUR_APP_KEY",
-        "app_secret": "YOUR_APP_SECRET",
-        "code": code
-    }
+    token_res = requests.get(
+        'https://auth.lazada.com/rest/auth/token',
+        params={
+            'grant_type': 'authorization_code',
+            'code': code,
+            'app_key': os.environ['LAZADA_CLIENT_ID'],
+            'app_secret': os.environ['LAZADA_CLIENT_SECRET'],
+            'redirect_uri': os.environ['LAZADA_CALLBACK_URL']
+        }
+    )
+    return jsonify(token_res.json())
 
-    res = requests.post("https://auth.lazada.com/rest", data=data)
-    return jsonify(res.json())
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
