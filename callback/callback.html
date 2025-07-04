@@ -1,27 +1,41 @@
-<!-- /callback.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>OAuth Callback</title>
-  <script>
-  // once Facebook/Lazada redirects here with ?code=XYZ or #access_token=XYZ
-  window.onload = () => {
-    const params = new URLSearchParams(window.location.search || window.location.hash.slice(1));
-    const code  = params.get('code');
-    const token = params.get('access_token');
-    if (code || token) {
-      // e.g. POST it back to your own API server,
-      // or save in localStorage and redirect into your SPA
-      console.log({ code, token });
-      document.body.innerHTML = '<h2>Authentication successful!</h2>';
-    } else {
-      document.body.innerHTML = '<h2>Invalid callback invocation.</h2>';
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lazada OAuth Callback</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f9f9f9;
+      padding: 2rem;
+      text-align: center;
     }
-  };
-  </script>
+    code {
+      background: #e0e0e0;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      display: inline-block;
+      margin-top: 1rem;
+      font-size: 1rem;
+    }
+  </style>
 </head>
 <body>
-  <h1>Processing OAuth Response…</h1>
+  <h2>🔐 Lazada Authorization Completed</h2>
+  <p>Here is your <strong>authorization code</strong>:</p>
+  <code id="auth-code">Fetching...</code>
+
+  <script>
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get("code");
+    const display = document.getElementById("auth-code");
+
+    if (code) {
+      display.textContent = code;
+    } else {
+      display.textContent = "⚠️ No code found in URL.";
+    }
+  </script>
 </body>
 </html>
