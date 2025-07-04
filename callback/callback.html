@@ -1,0 +1,27 @@
+<!-- /callback.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>OAuth Callback</title>
+  <script>
+  // once Facebook/Lazada redirects here with ?code=XYZ or #access_token=XYZ
+  window.onload = () => {
+    const params = new URLSearchParams(window.location.search || window.location.hash.slice(1));
+    const code  = params.get('code');
+    const token = params.get('access_token');
+    if (code || token) {
+      // e.g. POST it back to your own API server,
+      // or save in localStorage and redirect into your SPA
+      console.log({ code, token });
+      document.body.innerHTML = '<h2>Authentication successful!</h2>';
+    } else {
+      document.body.innerHTML = '<h2>Invalid callback invocation.</h2>';
+    }
+  };
+  </script>
+</head>
+<body>
+  <h1>Processing OAuth Response…</h1>
+</body>
+</html>
